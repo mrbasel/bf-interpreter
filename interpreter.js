@@ -7,7 +7,7 @@ export class BFInterpreter {
     this.currentIndex = 0;
     this.pointer = 0;
     this.stdinPointer = 0;
-    this.stack = [];
+    this.nesting = 0;
   }
 
   run(stdin = "") {
@@ -78,24 +78,23 @@ export class BFInterpreter {
 
   handleLoop(char) {
     if (char === "[" && this.getCurrentCellValue() === 0) {
-      this.stack.push({ elem: "[", index: this.currentIndex });
-      let j = this.currentIndex + 1;
-      while (this.stack.length !== 0) {
-        if (this.input[j] === "[") this.stack.push({ elem: "[", index: j });
-        else if (this.input[j] === "]") {
-          this.stack.pop();
-        }
+      let j = this.currentIndex;
+      while (true) {
         j++;
+        if (this.input[j] === "[") this.nesting++;
+        else if (this.input[j] === "]" && this.nesting > 0) this.nesting--;
+        else if (this.input[j] === "]" && this.nesting === 0) break;
       }
       this.currentIndex = j;
-    } else if (char === "[") {
-      this.stack.push({ elem: "[", index: this.currentIndex });
     } else if (char === "]" && this.getCurrentCellValue() !== 0) {
-      this.currentIndex = this.stack[this.stack.length - 1]?.index;
-    } else if (char === "]") {
-      if (this.stack[this.stack.length - 1]?.elem !== "[")
-        throw new Error("Brackets not balanced");
-      this.stack.pop();
+      let j = this.currentIndex;
+      while (true) {
+        j--;
+        if (this.input[j] === "]") this.nesting++;
+        else if (this.input[j] === "[" && this.nesting > 0) this.nesting--;
+        else if (this.input[j] === "[" && this.nesting === 0) break;
+      }
+      this.currentIndex = j;
     }
   }
 }
