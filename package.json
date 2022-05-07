@@ -9,5 +9,8 @@
   },
   "keywords": [],
   "author": "Basel",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^17.0.31"
+  }
 }
