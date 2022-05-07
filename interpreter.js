@@ -1,7 +1,8 @@
 export class BFInterpreter {
   static COMMAND_CHARS = [">", "<", "+", "-", ".", ",", "[", "]", "!"];
 
-  constructor(input) {
+  constructor(input, debug = false) {
+    this.debug = debug;
     this.cells = new Uint8Array(30000);
     this.input = input;
     this.currentIndex = 0;
@@ -38,12 +39,12 @@ export class BFInterpreter {
         case "]":
           this.handleLoop(currentChar);
           break;
-
         case "!":
-          console.log(this.cells);
-          console.log(this.pointer);
-          console.log(this.stack);
-          console.log(this.stdinPointer);
+          console.log(`
+          First 30 cells: ${this.cells.slice(0, 30)}
+          Pointer postion: ${this.pointer}
+          Input pointer postion: ${this.stdinPointer}
+          `);
           break;
 
         default:
